@@ -1,0 +1,5 @@
+nome,idade,peso,sexo,altura
+Isabela,22,60,F,1.44
+Gustavo,21,80,M,1.75
+Julia,20,50,F,1.62
+Joao,18,63,M,1.68
