@@ -1,0 +1,138 @@
+---
+title: "Trabalho Final"
+author: "Eduardo de Castro Luiz"
+date: "02/11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(kableExtra)
+library(htmltools)
+library(ggplot2)
+library(plotrix)
+
+setwd("C:/Users/Eduardo/Documents/MeusProjetos/Curso-de-Extensao-Estatistica-com-R")
+
+df <- read_csv("alcohol.csv",
+               col_types = cols(status = col_factor()),
+               locale = locale(decimal_mark = ','))
+
+glimpse(df)
+summary(df)
+```
+
+### Objetivos
+
+Primeiramente iremos ver a porcentagem de homens que abusam ou não de álcool, após esse primeiro momento iremos comparar as estatísticas descritivas de idade e escolaridade para ver se possui alguma correlação entre os homens que abusam ou não de álcool.
+
+### Resultados
+
+Porcentagem de homens que abusa e não abusa de Álcool. 
+```{r}
+df$abuse
+```
+
+```{r}
+df %>% 
+  summarise(Porcentagem_Abuso = mean(abuse)*100,
+            Porcentagem_NaoAbusa = 100 - Porcentagem_Abuso)
+```
+
+Estatísticas descritivas por anos de educação da amostra total, sem distinção entre os grupos.
+
+```{r}
+df$educ
+```
+
+```{r}
+df %>% 
+  summarise(abuse = "Geral",
+            Mínimo = min(educ),
+            Média = mean(educ),
+            Mediana = median(educ),
+            Desvio = sd(educ),
+            Máximo = max(educ),
+            Amostra = n())
+
+```
+
+Estatísticas descritivas por anos de educação da amostra total, com distinção entre os grupos que abusa ou não do álcool.
+```{r}
+df %>% 
+  group_by(abuse) %>% 
+  summarise(Mínimo = min(educ),
+            Média = mean(educ),
+            Mediana = median(educ),
+            Desvio = sd(educ),
+            Máximo = max(educ),
+            Amostra = n())
+```
+
+Estatísticas descritivas por idade da amostra total, sem distinção entre os grupos.
+```{r}
+df$age
+```
+
+```{r}
+df %>% 
+  summarise(abuse = "Geral",
+            Mínimo = min(age),
+            Média = mean(age),
+            Mediana = median(age),
+            Desvio = sd(age),
+            Máximo = max(age),
+            Amostra = n())
+```
+
+Estatísticas descritivas por idade da amostra total, com distinção entre os grupos que abusa ou não do álcool.
+```{r}
+df %>% 
+  group_by(abuse) %>% 
+  summarise(Mínimo = min(age),
+            Média = mean(age),
+            Mediana = median(age),
+            Desvio = sd(age),
+            Máximo = max(age),
+            Amostra = n())
+```
+
+
+Comparação entre as variaveis abuse, educ e age.
+```{r}
+df %>% 
+  select(abuse, age, educ) %>% 
+  cor()
+```
+
+
+### Gráficos
+
+Grafico referentes aos resultados obitidos nas amostra anos de educação das pessoas que abusa ou não de álcool.
+```{r}
+ggplot(df) +
+ aes(x = educ) +
+ geom_histogram(bins = 30L, fill = "#EF562D") +
+ theme_minimal()
+```
+
+Grafico referente a porcentagem de homens que abusa ou não de álcool.
+```{r}
+fatia <- df$abuse
+fatias <- table(fatia)
+rotulos <- c("Abusa", "Não abusa")
+percent <- round(fatias/sum(fatias)*100,digits=1)
+rotulos <- paste(rotulos, percent)
+rotulos <- paste(rotulos, "%", sep="")
+pie(fatias,labels = rotulos, col=c("lightseagreen","indianred2"))
+```
+
+### Conclusões
+
+Através dessa análise pude chegar a conclusão que da amostra total de 9822 homens, menos de 10% abusam do álcool, também pude chegar na conclusão de que a idade não é um fator determinante para abusar ou não, uma vez que podemos observar que a amostra são semelhantes, assim como o tempo na escola.
+Acredito que com uma amostra mais densa e com mais distinção (um numero maior de pessoas que abusam) seria possível gerar uma analisa mais detalhada.
+
+
+  
